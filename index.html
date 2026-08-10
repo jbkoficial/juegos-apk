@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>juegosAPK · móvil</title>
+  <meta name="theme-color" content="#0a0508">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* ============ RESET & BASE ============ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    :root {
+      --bg: #0a0508;
+      --bg2: #10080c;
+      --panel: #1a0d12;
+      --panel2: #2a121a;
+      --line: #3d1a24;
+      --line2: #5c2633;
+      --red: #ff3b3b;
+      --red-dark: #cc2222;
+      --red-light: #ff6b6b;
+      --red-glow: rgba(255, 59, 59, .45);
+      --text: #f5ecec;
+      --muted: #b08a8a;
+      --dim: #7a5555;
+      --display: 'Bungee', cursive;
+      --body: 'Outfit', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --r: 12px;
+      --bottom-nav: 72px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-weight: 300;
+      line-height: 1.5;
+      background-image:
+        radial-gradient(900px 520px at 80% -10%, rgba(255, 59, 59, .08), transparent 60%),
+        radial-gradient(700px 420px at -10% 35%, rgba(255, 59, 59, .05), transparent 60%);
+      background-attachment: fixed;
+      touch-action: manipulation;
+    }
+    ::selection {
+      background: var(--red);
+      color: #0a0508;
+    }
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--red);
+      border-radius: 4px;
+    }
+
+    /* ============ APP SHELL ============ */
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Header móvil */
+    .app-header {
+      padding: 12px 16px;
+      background: rgba(10, 5, 8, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      z-index: 10;
+      min-height: 56px;
+    }
+    .app-header .logo {
+      font-family: var(--display);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: .02em;
+      color: var(--text);
+    }
+    .app-header .logo .apk {
+      color: var(--red);
+      text-shadow: 0 0 16px var(--red-glow);
+    }
+    .app-header .logo .crown {
+      width: 28px;
+      height: 28px;
+      background: var(--red);
+      color: #0a0508;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      border-radius: 6px;
+      box-shadow: 0 0 14px var(--red-glow);
+    }
+    .app-header .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .app-header .header-actions button {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 18px;
+      padding: 6px;
+      transition: color .2s;
+    }
+    .app-header .header-actions button:active {
+      color: var(--red);
+    }
+
+    /* ============ CONTENIDO SCROLLABLE ============ */
+    .main-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0 16px 16px 16px;
+      padding-bottom: calc(16px + var(--bottom-nav) + var(--safe-bottom));
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    .page {
+      display: none;
+      animation: fadeUp .3s ease;
+    }
+    .page.active {
+      display: block;
+    }
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ============ BOTTOM NAV ============ */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      height: calc(var(--bottom-nav) + var(--safe-bottom));
+      padding-bottom: var(--safe-bottom);
+      background: rgba(10, 5, 8, 0.94);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: stretch;
+      justify-content: space-around;
+      z-index: 100;
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.6);
+    }
+    .bottom-nav button {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--dim);
+      font-size: 10px;
+      font-family: var(--mono);
+      letter-spacing: .04em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      transition: color .2s;
+      padding: 4px 0;
+      position: relative;
+      touch-action: manipulation;
+    }
+    .bottom-nav button i {
+      font-size: 22px;
+      transition: transform .2s;
+    }
+    .bottom-nav button:active i {
+      transform: scale(0.85);
+    }
+    .bottom-nav button.active {
+      color: var(--red);
+    }
+    .bottom-nav button.active i {
+      text-shadow: 0 0 20px var(--red-glow);
+    }
+    .bottom-nav .nav-publish {
+      margin-top: -16px;
+    }
+    .bottom-nav .nav-publish i {
+      font-size: 32px;
+      background: var(--red);
+      color: #0a0508;
+      padding: 8px;
+      border-radius: 50%;
+      box-shadow: 0 0 24px var(--red-glow);
+      transition: transform .2s, box-shadow .2s;
+      margin-bottom: 2px;
+    }
+    .bottom-nav .nav-publish:active i {
+      transform: scale(0.9);
+      box-shadow: 0 0 8px var(--red-glow);
+    }
+    .bottom-nav .nav-publish span {
+      display: none;
+    }
+
+    /* ============ COMPONENTES ============ */
+    .hero-mini {
+      padding: 8px 0 12px;
+    }
+    .hero-mini .epic-mini {
+      font-family: var(--display);
+      font-size: 28px;
+      line-height: 1.1;
+      letter-spacing: .02em;
+    }
+    .hero-mini .epic-mini .apk {
+      color: var(--red);
+      text-shadow: 0 0 20px var(--red-glow);
+    }
+    .hero-mini .sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .hero-mini .sub b {
+      color: var(--red-light);
+    }
+
+    .stats-mini {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 12px 8px;
+      margin: 12px 0;
+    }
+    .stats-mini .s-item {
+      text-align: center;
+    }
+    .stats-mini .s-item .num {
+      font-family: var(--display);
+      font-size: 18px;
+      color: var(--red);
+    }
+    .stats-mini .s-item .lbl {
+      font-family: var(--mono);
+      font-size: 8px;
+      text-transform: uppercase;
+      color: var(--dim);
+      letter-spacing: .1em;
+    }
+
+    .term-mini {
+      background: #07060c;
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 10px 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      max-height: 120px;
+      overflow-y: auto;
+      line-height: 1.8;
+      margin: 12px 0;
+    }
+    .term-mini .caret {
+      display: inline-block;
+      width: 6px;
+      height: 11px;
+      background: var(--red);
+      vertical-align: middle;
+      animation: blink 1s steps(1) infinite;
+    }
+    .term-mini .l-cmd {
+      color: var(--red-light);
+    }
+    .term-mini .l-ok {
+      color: #4ade80;
+    }
+    .term-mini .l-warn {
+      color: var(--red);
+    }
+    .term-mini .l-info {
+      color: var(--dim);
+    }
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    .rules-mini {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .rules-mini .r-item {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 14px 8px;
+      text-align: center;
+    }
+    .rules-mini .r-item .n {
+      font-family: var(--display);
+      font-size: 18px;
+      color: var(--red);
+    }
+    .rules-mini .r-item h4 {
+      font-family: var(--display);
+      font-size: 11px;
+      margin: 4px 0;
+    }
+    .rules-mini .r-item p {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* ============ PUBLICAR ============ */
+    .dropzone-m {
+      border: 2px dashed var(--line2);
+      border-radius: var(--r);
+      padding: 24px 12px;
+      text-align: center;
+      transition: all .2s;
+      cursor: pointer;
+      background: var(--bg2);
+      margin-bottom: 14px;
+    }
+    .dropzone-m:hover,
+    .dropzone-m.over {
+      border-color: var(--red);
+      background: rgba(255, 59, 59, .08);
+    }
+    .dropzone-m .dz-ico {
+      font-size: 28px;
+      color: var(--red);
+    }
+    .dropzone-m .dz-t {
+      font-family: var(--display);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+    .dropzone-m .dz-s {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--dim);
+    }
+    .file-card-m {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg);
+      border: 1px solid rgba(255, 59, 59, .4);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+    .file-card-m.show {
+      display: flex;
+    }
+    .file-card-m .fc-ico {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 59, 59, .12);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--red);
+      flex-shrink: 0;
+    }
+    .file-card-m .fc-name {
+      font-family: var(--mono);
+      font-size: 12px;
+      word-break: break-all;
+    }
+    .file-card-m .fc-meta {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--dim);
+    }
+    .field-m {
+      margin-bottom: 12px;
+    }
+    .field-m label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--dim);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .field-m input,
+    .field-m select,
+    .field-m textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 14px;
+      padding: 10px 12px;
+      transition: border-color .2s;
+    }
+    .field-m textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    .field-m input:focus,
+    .field-m select:focus,
+    .field-m textarea:focus {
+      outline: none;
+      border-color: var(--red);
+      box-shadow: 0 0 0 2px var(--red-glow);
+    }
+    .f-row-m {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* ============ CATÁLOGO ============ */
+    .toolbar-m {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 12px 0;
+    }
+    .search-box-m {
+      flex: 1;
+      min-width: 140px;
+      position: relative;
+    }
+    .search-box-m input {
+      width: 100%;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 13px;
+      padding: 10px 14px 10px 36px;
+      transition: border-color .2s;
+    }
+    .search-box-m input:focus {
+      outline: none;
+      border-color: var(--red);
+    }
+    .search-box-m::before {
+      content: "⌕";
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--red);
+      font-size: 15px;
+    }
+    .chips-m {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      overflow-x: auto;
+      padding: 4px 0;
+      -webkit-overflow-scrolling: touch;
+      flex: 1 1 100%;
+    }
+    .chips-m .chip {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--line2);
+      color: var(--muted);
+      border-radius: 20px;
+      padding: 6px 14px;
+      white-space: nowrap;
+      transition: all .18s;
+      touch-action: manipulation;
+    }
+    .chips-m .chip:active {
+      transform: scale(0.94);
+    }
+    .chips-m .chip.on {
+      background: var(--red);
+      border-color: var(--red);
+      color: #0a0508;
+      font-weight: 700;
+      box-shadow: 0 0 16px var(--red-glow);
+    }
+
+    .grid-m {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .g-card-m {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 12px;
+      position: relative;
+      cursor: pointer;
+      transition: transform .2s, border-color .2s;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .g-card-m:active {
+      transform: scale(0.96);
+      border-color: var(--red);
+    }
+    .g-card-m .g-top {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .g-card-m .g-top img {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--line2);
+      flex-shrink: 0;
+    }
+    .g-card-m .g-top .g-title {
+      font-family: var(--display);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+    .g-card-m .g-top .g-dev {
+      font-size: 10px;
+      color: var(--red-light);
+    }
+    .g-card-m .g-mid {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+    }
+    .g-card-m .g-mid .stars {
+      color: var(--red);
+      letter-spacing: 1px;
+    }
+    .g-card-m .g-mid .stars .off {
+      color: var(--line2);
+    }
+    .g-card-m .g-foot {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .g-card-m .g-foot .g-dl {
+      flex: 1;
+      background: transparent;
+      border: 1px solid var(--line2);
+      color: var(--red);
+      font-family: var(--display);
+      font-size: 10px;
+      border-radius: 6px;
+      padding: 8px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: all .2s;
+      touch-action: manipulation;
+    }
+    .g-card-m .g-foot .g-dl:active {
+      background: var(--red);
+      color: #0a0508;
+    }
+    .g-card-m .g-foot .g-dl .fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0;
+      background: rgba(255, 59, 59, .25);
+      transition: width .1s linear;
+    }
+    .g-card-m .g-foot .g-dl .lbl {
+      position: relative;
+      z-index: 2;
+    }
+    .g-card-m .g-foot .icon-btn {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      border-radius: 6px;
+      border: 1px solid var(--line2);
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      display: grid;
+      place-items: center;
+      transition: all .2s;
+      touch-action: manipulation;
+    }
+    .g-card-m .g-foot .icon-btn:active {
+      border-color: var(--red);
+      color: var(--red);
+    }
+    .g-card-m .g-foot .icon-btn.fav {
+      color: var(--red);
+      border-color: var(--red);
+    }
+    .g-card-m .g-rights {
+      font-family: var(--mono);
+      font-size: 7px;
+      color: var(--dim);
+      letter-spacing: .08em;
+      margin-top: 4px;
+    }
+    .g-card-m .g-rights b {
+      color: var(--red-light);
+    }
+    .g-card-m .g-flag {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-family: var(--mono);
+      font-size: 7px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--red);
+      color: #0a0508;
+    }
+
+    .empty-m {
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--muted);
+      grid-column: 1 / -1;
+    }
+    .empty-m .ghost {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 12px;
+    }
+    .empty-m h3 {
+      font-family: var(--display);
+      font-size: 18px;
+      color: var(--text);
+    }
+    .empty-m p {
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    /* ============ MODAL MÓVIL ============ */
+    .modal-m {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(6, 4, 10, 0.8);
+      backdrop-filter: blur(6px);
+    }
+    .modal-m.open {
+      display: flex;
+    }
+    .modal-m .modal-box {
+      background: var(--bg2);
+      border: 1px solid var(--line2);
+      border-radius: var(--r);
+      max-width: 480px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp .3s cubic-bezier(.2, .9, .3, 1.2);
+      padding: 20px;
+    }
+    @keyframes slideUp {
+      from {
+        transform: translateY(40px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    .modal-m .modal-box .m-close {
+      float: right;
+      background: transparent;
+      border: none;
+      color: var(--dim);
+      font-size: 22px;
+      padding: 4px 8px;
+      transition: color .2s;
+    }
+    .modal-m .modal-box .m-close:active {
+      color: var(--red);
+    }
+    .modal-m .modal-box .m-title {
+      font-family: var(--display);
+      font-size: 22px;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .modal-m .modal-box .m-sub {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--dim);
+      margin-bottom: 12px;
+    }
+    .modal-m .modal-box .m-sub b {
+      color: var(--red-light);
+    }
+    .modal-m .modal-box .m-desc {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .modal-m .modal-box .m-spec {
+      width: 100%;
+      font-family: var(--mono);
+      font-size: 11px;
+      border-collapse: collapse;
+      margin: 8px 0;
+    }
+    .modal-m .modal-box .m-spec td {
+      padding: 6px 2px;
+      border-bottom: 1px dashed var(--line);
+    }
+    .modal-m .modal-box .m-spec td:first-child {
+      color: var(--dim);
+      width: 100px;
+    }
+    .modal-m .modal-box .m-spec td:last-child {
+      color: var(--text);
+    }
+    .modal-m .modal-box .m-rate {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 14px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+    .modal-m .modal-box .m-rate .rb-t {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .12em;
+      color: var(--dim);
+      text-transform: uppercase;
+    }
+    .modal-m .modal-box .m-rate .rate-stars {
+      display: flex;
+      gap: 2px;
+    }
+    .modal-m .modal-box .m-rate .rate-stars button {
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: var(--line2);
+      transition: transform .15s, color .15s;
+      padding: 2px;
+    }
+    .modal-m .modal-box .m-rate .rate-stars button.lit {
+      color: var(--red);
+    }
+    .modal-m .modal-box .m-rate .rate-stars button:active {
+      transform: scale(1.3);
+    }
+    .modal-m .modal-box .m-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .modal-m .modal-box .m-actions .btn-m {
+      flex: 1;
+      min-width: 60px;
+      padding: 10px 0;
+      text-align: center;
+      border-radius: 6px;
+      font-family: var(--display);
+      font-size: 11px;
+      border: none;
+      background: var(--red);
+      color: #0a0508;
+      transition: transform .2s, box-shadow .2s;
+      touch-action: manipulation;
+    }
+    .modal-m .modal-box .m-actions .btn-m:active {
+      transform: scale(0.94);
+    }
+    .modal-m .modal-box .m-actions .btn-ghost-m {
+      background: transparent;
+      border: 1px solid var(--line2);
+      color: var(--text);
+    }
+    .modal-m .modal-box .m-actions .btn-ghost-m:active {
+      border-color: var(--red);
+      color: var(--red);
+    }
+    .modal-m .modal-box .m-rights {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--dim);
+      border-top: 1px dashed var(--line);
+      padding-top: 12px;
+      margin-top: 12px;
+    }
+    .modal-m .modal-box .m-rights b {
+      color: var(--red-light);
+    }
+
+    /* ============ PERFIL ============ */
+    .profile-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .profile-card .p-name {
+      font-family: var(--display);
+      font-size: 18px;
+    }
+    .profile-card .p-name small {
+      font-family: var(--body);
+      font-weight: 300;
+      font-size: 12px;
+      color: var(--dim);
+    }
+    .profile-card .p-stats {
+      display: flex;
+      gap: 16px;
+      margin: 8px 0;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .profile-card .p-stats b {
+      color: var(--red);
+    }
+    .profile-card .p-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .profile-card .p-actions button {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--line2);
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      transition: all .2s;
+      touch-action: manipulation;
+    }
+    .profile-card .p-actions button:active {
+      border-color: var(--red);
+      color: var(--red);
+    }
+    .profile-card .p-actions button.danger {
+      border-color: var(--red);
+      color: var(--red);
+    }
+    .profile-card .p-actions button.danger:active {
+      background: var(--red);
+      color: #0a0508;
+    }
+
+    .history-list {
+      list-style: none;
+      padding: 0;
+    }
+    .history-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--line);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .history-list li .h-name {
+      color: var(--text);
+    }
+    .history-list li .h-date {
+      color: var(--dim);
+      font-size: 10px;
+    }
+
+    /* ============ BOTONES GENERALES ============ */
+    .btn-full {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--display);
+      font-size: 14px;
+      background: var(--red);
+      color: #0a0508;
+      box-shadow: 0 0 20px var(--red-glow);
+      transition: transform .2s, box-shadow .2s;
+      touch-action: manipulation;
+    }
+    .btn-full:active {
+      transform: scale(0.96);
+      box-shadow: 0 0 8px var(--red-glow);
+    }
+    .btn-full:disabled {
+      opacity: .5;
+      transform: none !important;
+    }
+
+    /* ============ TOAST ============ */
+    .toast-m {
+      position: fixed;
+      bottom: calc(var(--bottom-nav) + 16px + var(--safe-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--panel2);
+      border: 1px solid var(--line2);
+      border-left: 3px solid var(--red);
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      max-width: 90%;
+      z-index: 300;
+      opacity: 0;
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    }
+    .toast-m.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast-m.ok {
+      border-left-color: #4ade80;
+    }
+    .toast-m.warn {
+      border-left-color: var(--red);
+    }
+
+    /* ============ UTILIDADES ============ */
+    .mt-8 {
+      margin-top: 8px;
+    }
+    .mt-12 {
+      margin-top: 12px;
+    }
+    .mb-8 {
+      margin-bottom: 8px;
+    }
+    .mb-12 {
+      margin-bottom: 12px;
+    }
+    .text-center {
+      text-align: center;
+    }
+    .gap-8 {
+      gap: 8px;
+    }
+    .flex {
+      display: flex;
+    }
+    .flex-wrap {
+      flex-wrap: wrap;
+    }
+    .items-center {
+      align-items: center;
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 400px) {
+      .grid-m {
+        grid-template-columns: 1fr;
+      }
+      .rules-mini {
+        grid-template-columns: 1fr 1fr;
+      }
+      .stats-mini {
+        grid-template-columns: 1fr 1fr;
+      }
+      .f-row-m {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (min-width: 481px) {
+      #app {
+        border-left: 1px solid var(--line);
+        border-right: 1px solid var(--line);
+        box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Scroll suave para el terminal */
+    .term-mini::-webkit-scrollbar {
+      width: 3px;
+    }
+    .term-mini::-webkit-scrollbar-thumb {
+      background: var(--red);
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="logo">
+        <span class="crown">♛</span>juegos<span class="apk">APK</span>
+      </div>
+      <div class="header-actions">
+        <button id="randomBtn" aria-label="Juego aleatorio"><i class="fas fa-dice"></i></button>
+        <button id="refreshBtn" aria-label="Refrescar"><i class="fas fa-sync-alt"></i></button>
+      </div>
+    </header>
+
+    <!-- CONTENIDO SCROLLABLE -->
+    <div class="main-scroll" id="mainScroll">
+
+      <!-- ========== PÁGINA INICIO ========== -->
+      <div class="page active" id="page-home">
+        <div class="hero-mini">
+          <div class="epic-mini">juegos<span class="apk">APK</span></div>
+          <div class="sub">Comunidad de juegos · <b>cada juego es de su autor</b></div>
+        </div>
+
+        <div class="stats-mini" id="statsMini">
+          <div class="s-item"><div class="num" id="stGames">0</div><div class="lbl">Juegos</div></div>
+          <div class="s-item"><div class="num" id="stDls">0</div><div class="lbl">Descargas</div></div>
+          <div class="s-item"><div class="num" id="stRate">—</div><div class="lbl">Nota</div></div>
+          <div class="s-item"><div class="num" id="stAuth">0</div><div class="lbl">Autores</div></div>
+        </div>
+
+        <div class="term-mini" id="termMini">
+          <div class="l-info"># juegosAPK · consola móvil</div>
+          <div class="l-warn"># esperando el primer juego…</div>
+          <div><span class="caret"></span></div>
+        </div>
+
+        <div class="rules-mini">
+          <div class="r-item"><div class="n">01</div><h4>Publica</h4><p>Sube tu APK</p></div>
+          <div class="r-item"><div class="n">02</div><h4>Es tuyo</h4><p>Eres el autor</p></div>
+          <div class="r-item"><div class="n">03</div><h4>Comparte</h4><p>Valora y juega</p></div>
+        </div>
+
+        <div style="margin-top:12px; text-align:center; font-family:var(--mono); font-size:10px; color:var(--dim);">
+          <i class="fas fa-code"></i> Creado por JBK · v2.0 móvil
+        </div>
+      </div>
+
+      <!-- ========== PÁGINA CATÁLOGO ========== -->
+      <div class="page" id="page-catalog">
+        <div class="toolbar-m">
+          <div class="search-box-m">
+            <input id="searchInputM" type="search" placeholder="Buscar juego o autor…">
+          </div>
+          <div class="chips-m" id="chipsM"></div>
+          <select id="sortSelectM" style="background:var(--panel);border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:20px;font-family:var(--mono);font-size:11px;flex:1;min-width:100px;">
+            <option value="recientes">Recientes</option>
+            <option value="descargas">Más descargas</option>
+            <option value="valoracion">Mejor nota</option>
+            <option value="tamano">Menor tamaño</option>
+          </select>
+        </div>
+        <p class="count-line" id="countLineM" style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-bottom:8px;"></p>
+        <div class="grid-m" id="gridM"></div>
+      </div>
+
+      <!-- ========== PÁGINA PUBLICAR ========== -->
+      <div class="page" id="page-publish">
+        <h2 style="font-family:var(--display);font-size:20px;margin-bottom:12px;">📤 Publicar juego</h2>
+        <div class="dropzone-m" id="dropzoneM" role="button" tabindex="0">
+          <div class="dz-ico">⇪</div>
+          <div class="dz-t">Toca para elegir .APK</div>
+          <div class="dz-s">o arrastra el archivo</div>
+        </div>
+        <input type="file" id="fileInputM" accept=".apk,.apks,.xapk" hidden>
+        <div class="file-card-m" id="fileCardM">
+          <div class="fc-ico">📦</div>
+          <div><div class="fc-name" id="fcNameM"></div><div class="fc-meta" id="fcMetaM"></div></div>
+        </div>
+
+        <div class="field-m"><label>Nombre del juego *</label><input id="pNameM" type="text" maxlength="40" placeholder="Ej.: Sombra Neón"></div>
+        <div class="f-row-m">
+          <div class="field-m"><label>Tu nombre (autor) *</label><input id="pDevM" type="text" maxlength="30" placeholder="Tu nombre/estudio"></div>
+          <div class="field-m"><label>Versión</label><input id="pVerM" type="text" value="1.0.0"></div>
+        </div>
+        <div class="field-m"><label>Categoría</label>
+          <select id="pCatM">
+            <option>Acción</option><option>Aventura</option><option>Carreras</option>
+            <option>Deportes</option><option>Estrategia</option><option selected>Indie</option>
+            <option>Puzzle</option><option>RPG</option>
+          </select>
+        </div>
+        <div class="field-m"><label>Descripción</label><textarea id="pDescM" maxlength="200" placeholder="¿De qué va tu juego?"></textarea></div>
+        <button class="btn-full" id="publishBtnM">▸ COMPARTIR CON LA COMUNIDAD</button>
+        <p style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:8px;text-align:center;">Al publicar, <b style="color:var(--red-light);">tú eres el autor</b>. El juego es tuyo.</p>
+      </div>
+
+      <!-- ========== PÁGINA FAVORITOS ========== -->
+      <div class="page" id="page-favorites">
+        <h2 style="font-family:var(--display);font-size:20px;margin-bottom:12px;">♥ Favoritos</h2>
+        <div class="grid-m" id="favGridM"></div>
+      </div>
+
+      <!-- ========== PÁGINA PERFIL ========== -->
+      <div class="page" id="page-profile">
+        <div class="profile-card">
+          <div class="p-name">👤 <span id="profileName">Anónimo</span> <small>autor</small></div>
+          <div class="p-stats">
+            <span>📦 <b id="profileGames">0</b> juegos</span>
+            <span>⬇ <b id="profileDls">0</b> descargas</span>
+          </div>
+          <div class="p-actions">
+            <button id="editProfileBtn"><i class="fas fa-edit"></i> Cambiar nombre</button>
+            <button id="jbkProfileBtn" class="danger"><i class="fas fa-shield-alt"></i> Panel JBK</button>
+          </div>
+        </div>
+
+        <h3 style="font-family:var(--display);font-size:16px;margin:12px 0 8px;">📜 Historial de descargas</h3>
+        <ul class="history-list" id="historyList"></ul>
+
+        <h3 style="font-family:var(--display);font-size:16px;margin:16px 0 8px;">📱 Mis juegos publicados</h3>
+        <div class="grid-m" id="myGamesGrid"></div>
+
+        <div style="margin-top:16px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--dim);">
+          <i class="fas fa-code"></i> juegosAPK · v2.0 · por JBK
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" id="bottomNav">
+      <button data-page="home" class="active"><i class="fas fa-home"></i><span>Inicio</span></button>
+      <button data-page="catalog"><i class="fas fa-search"></i><span>Catálogo</span></button>
+      <button data-page="publish" class="nav-publish"><i class="fas fa-plus-circle"></i><span>Publicar</span></button>
+      <button data-page="favorites"><i class="fas fa-heart"></i><span>Favoritos</span></button>
+      <button data-page="profile"><i class="fas fa-user"></i><span>Perfil</span></button>
+    </nav>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-m" id="modalM">
+    <div class="modal-box" id="modalBoxM">
+      <button class="m-close" id="modalCloseM"><i class="fas fa-times"></i></button>
+      <div id="modalContentM"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast-m" id="toastM"></div>
+
+  <script>
+    'use strict';
+    /* ============ ESTADO ============ */
+    const LS = 'juegosapk_data',
+      LSFAV = 'juegosapk_favs',
+      LSMY = 'juegosapk_myvotes',
+      LSJBK = 'juegosapk_jbk',
+      LSHIST = 'juegosapk_history',
+      LSAUTH = 'juegosapk_author';
+    const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let GAMES = JSON.parse(localStorage.getItem(LS) || '[]');
+    let FAVS = new Set(JSON.parse(localStorage.getItem(LSFAV) || '[]'));
+    let MYVOTES = JSON.parse(localStorage.getItem(LSMY) || '{}');
+    let HISTORY = JSON.parse(localStorage.getItem(LSHIST) || '[]');
+    let currentAuthor = localStorage.getItem(LSAUTH) || '';
+
+    const CATS = ['Todos', 'Acción', 'Aventura', 'Carreras', 'Deportes', 'Estrategia', 'Indie', 'Puzzle', 'RPG'];
+    const state = { cat: 'Todos', q: '', sort: 'recientes', currentPage: 'home' };
+
+    const save = () => {
+      localStorage.setItem(LS, JSON.stringify(GAMES));
+      localStorage.setItem(LSFAV, JSON.stringify([...FAVS]));
+      localStorage.setItem(LSMY, JSON.stringify(MYVOTES));
+      localStorage.setItem(LSHIST, JSON.stringify(HISTORY));
+      if (currentAuthor) localStorage.setItem(LSAUTH, currentAuthor);
+    };
+
+    /* ============ UTILIDADES ============ */
+    const fmtBytes = b => b >= 1073741824 ? (b / 1073741824).toFixed(2).replace('.', ',') + ' GB' : b >= 1048576 ? (b /
+      1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
+    const fmtDL = n => n >= 1e6 ? (n / 1e6).toFixed(1).replace('.', ',') + ' M' : n >= 1e3 ? (n / 1e3 | 0) + ' K' : '' + n;
+    const avg = g => g.rCount ? g.rSum / g.rCount : 0;
+    const stars = r => { const f = Math.round(r); return '★'.repeat(f) + '<span class="off">' + '★'.repeat(5 - f) + '</span>' };
+    const timeAgo = ts => { const m = Math.floor((Date.now() - ts) / 60000); return m < 1 ? 'ahora' : m < 60 ? `hace ${m}m` :
+        m < 1440 ? `hace ${Math.floor(m/60)}h` : `hace ${Math.floor(m/1440)}d` };
+    const sleep = ms => new Promise(r => setTimeout(r, REDUCED ? 10 : ms));
+
+    function toastM(msg, type = '') {
+      const t = document.getElementById('toastM');
+      t.textContent = msg;
+      t.className = 'toast-m show ' + type;
+      clearTimeout(t._hide);
+      t._hide = setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    function termLineM(txt, cls = 'l-info') {
+      const body = document.getElementById('termMini');
+      const caret = body.querySelector('.caret')?.parentElement;
+      const d = document.createElement('div');
+      d.className = cls;
+      d.textContent = txt;
+      caret ? body.insertBefore(d, caret) : body.appendChild(d);
+      while (body.children.length > 40) body.firstChild.remove();
+      body.scrollTop = body.scrollHeight;
+    }
+
+    /* ============ NAVEGACIÓN ============ */
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('page-' + pageId);
+      if (target) target.classList.add('active');
+      document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
+      state.currentPage = pageId;
+      // Si vamos a favoritos o perfil, refrescamos
+      if (pageId === 'favorites') renderFavorites();
+      if (pageId === 'profile') renderProfile();
+      if (pageId === 'catalog') renderCatalog();
+      document.getElementById('mainScroll').scrollTop = 0;
+    }
+
+    document.querySelectorAll('.bottom-nav button').forEach(btn => {
+      btn.addEventListener('click', () => showPage(btn.dataset.page));
+    });
+
+    /* ============ ESTADÍSTICAS ============ */
+    function updateStatsM() {
+      document.getElementById('stGames').textContent = GAMES.length;
+      document.getElementById('stDls').textContent = fmtDL(GAMES.reduce((a, g) => a + g.dls, 0));
+      const rated = GAMES.filter(g => g.rCount > 0);
+      document.getElementById('stRate').textContent = rated.length ? (rated.reduce((a, g) => a + avg(g), 0) / rated.length)
+        .toFixed(1).replace('.', ',') : '—';
+      document.getElementById('stAuth').textContent = new Set(GAMES.map(g => g.dev)).size;
+    }
+
+    /* ============ CATÁLOGO ============ */
+    function getVisibleGames() {
+      let list = GAMES.filter(g => {
+        const okCat = state.cat === 'Todos' ? true : state.cat === '__favs' ? FAVS.has(g.id) : g.cat === state.cat;
+        return okCat && (g.t + ' ' + g.dev).toLowerCase().includes(state.q.toLowerCase());
+      });
+      const s = state.sort;
+      list.sort((a, b) => s === 'descargas' ? b.dls - a.dls : s === 'valoracion' ? avg(b) - avg(a) : s === 'tamano' ? a.size -
+        b.size : b.date - a.date);
+      return list;
+    }
+
+    function renderChipsM() {
+      const container = document.getElementById('chipsM');
+      container.innerHTML = CATS.map(c =>
+        `<button class="chip${state.cat===c?' on':''}" data-cat="${c}">${c}</button>`
+      ).join('') +
+        `<button class="chip${state.cat==='__favs'?' on':''}" data-cat="__favs">♥ ${FAVS.size}</button>`;
+    }
+
+    function renderCatalog() {
+      const list = getVisibleGames();
+      document.getElementById('countLineM').textContent = GAMES.length ?
+        `${list.length} de ${GAMES.length} juegos` :
+        '📭 Catálogo vacío';
+      const grid = document.getElementById('gridM');
+      if (!GAMES.length) {
+        grid.innerHTML =
+          `<div class="empty-m"><span class="ghost">👾</span><h3>Sin juegos</h3><p>Sé el primero en publicar un APK</p></div>`;
+        return;
+      }
+      if (!list.length) {
+        grid.innerHTML =
+          `<div class="empty-m"><span class="ghost">🔍</span><h3>Sin resultados</h3><p>Prueba otros filtros</p></div>`;
+        return;
+      }
+      grid.innerHTML = list.map(g => cardHTMLM(g)).join('');
+    }
+
+    function cardHTMLM(g) {
+      const r = avg(g);
+      const flag = g.reported ?
+        '<span class="g-flag">⚠</span>' :
+        g.featured ? '<span class="g-flag">★</span>' : '';
+      return `<div class="g-card-m" data-id="${g.id}">
+        ${flag}
+        <div class="g-top">
+          <img src="https://picsum.photos/seed/${g.id}/120/120" alt="" loading="lazy">
+          <div><div class="g-title">${g.t}</div><div class="g-dev">por ${g.dev}</div></div>
+        </div>
+        <div class="g-mid"><span class="stars">${r?stars(r):'<span class="off">★★★★★</span>'}</span><span>${r?r.toFixed(1).replace('.',',')+' ('+g.rCount+')':'—'}</span></div>
+        <div class="g-foot">
+          <button class="g-dl" data-dl="${g.id}"><span class="fill"></span><span class="lbl">⬇ ${fmtBytes(g.size)}</span></button>
+          <button class="icon-btn${FAVS.has(g.id)?' fav':''}" data-fav="${g.id}">♥</button>
+        </div>
+        <div class="g-rights">de <b>${g.dev}</b> · ${timeAgo(g.date)}</div>
+      </div>`;
+    }
+
+    /* ============ FAVORITOS ============ */
+    function renderFavorites() {
+      const grid = document.getElementById('favGridM');
+      const favGames = GAMES.filter(g => FAVS.has(g.id));
+      if (!favGames.length) {
+        grid.innerHTML =
+          `<div class="empty-m"><span class="ghost">♥</span><h3>Sin favoritos</h3><p>Marca tus juegos favoritos</p></div>`;
+        return;
+      }
+      grid.innerHTML = favGames.map(g => cardHTMLM(g)).join('');
+    }
+
+    /* ============ PERFIL ============ */
+    function renderProfile() {
+      document.getElementById('profileName').textContent = currentAuthor || 'Anónimo';
+      const myGames = GAMES.filter(g => g.dev === currentAuthor);
+      document.getElementById('profileGames').textContent = myGames.length;
+      document.getElementById('profileDls').textContent = fmtDL(myGames.reduce((a, g) => a + g.dls, 0));
+
+      // Historial
+      const histList = document.getElementById('historyList');
+      if (!HISTORY.length) {
+        histList.innerHTML = '<li style="color:var(--dim);font-size:11px;">No has descargado nada aún</li>';
+      } else {
+        histList.innerHTML = HISTORY.slice(0, 10).map(h =>
+          `<li><span class="h-name">${h.name}</span><span class="h-date">${h.date}</span></li>`
+        ).join('');
+      }
+
+      // Mis juegos
+      const grid = document.getElementById('myGamesGrid');
+      if (!myGames.length) {
+        grid.innerHTML =
+          `<div class="empty-m" style="grid-column:1/-1;"><span class="ghost">📭</span><h3>No has publicado</h3><p>Publica tu primer juego</p></div>`;
+        return;
+      }
+      grid.innerHTML = myGames.map(g => cardHTMLM(g)).join('');
+    }
+
+    /* ============ MODAL ============ */
+    function openModalM(id) {
+      const g = GAMES.find(x => x.id === id);
+      if (!g) return;
+      const r = avg(g),
+        mine = MYVOTES[id] || 0;
+      const isJBK = localStorage.getItem(LSJBK) === '1';
+      const isAuthor = g.dev === currentAuthor;
+
+      const modal = document.getElementById('modalM');
+      const box = document.getElementById('modalContentM');
+      box.innerHTML = `
+        <div class="m-title">${g.t} ${g.featured?'★':''}</div>
+        <div class="m-sub">por <b>${g.dev}</b> · ${g.cat} · ${timeAgo(g.date)} ${g.reported?'⚠':''}</div>
+        <p class="m-desc">${g.desc||'Sin descripción.'}</p>
+        <div class="m-rate">
+          <span class="rb-t">Tu nota</span>
+          <div class="rate-stars" id="rateStarsM">${[1,2,3,4,5].map(n=>`<button data-star="${n}" class="${n<=mine?'lit':''}">★</button>`).join('')}</div>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted);">${r?r.toFixed(1).replace('.',',')+' ★ ('+g.rCount+')':'Sin votos'}</span>
+        </div>
+        <table class="m-spec">
+          <tr><td>Autor</td><td style="color:var(--red-light);">${g.dev}</td></tr>
+          <tr><td>Versión</td><td>${g.ver}</td></tr>
+          <tr><td>Peso</td><td>${fmtBytes(g.size)}</td></tr>
+          <tr><td>Descargas</td><td>${g.dls}</td></tr>
+        </table>
+        <div class="m-actions">
+          <button class="btn-m" data-dl="${g.id}">⬇ Descargar</button>
+          <button class="btn-m btn-ghost-m" data-fav="${g.id}">${FAVS.has(g.id)?'♥ Quitar':'♥ Favorito'}</button>
+          <button class="btn-m btn-ghost-m" data-share="${g.id}">🔗 Compartir</button>
+        </div>
+        ${(isJBK || isAuthor) ? `<div class="m-actions" style="margin-top:6px;">
+          <button class="btn-m btn-ghost-m" id="editGameBtn" data-id="${g.id}" style="flex:1;"><i class="fas fa-edit"></i> Editar</button>
+        </div>` : ''}
+        ${(isJBK) ? `<div class="m-actions" style="margin-top:6px;">
+          <button class="btn-m btn-ghost-m" data-rep="${g.id}" style="flex:1;color:var(--red);">⚠ Denunciar</button>
+        </div>` : ''}
+        <div class="m-rights">Este juego es propiedad de <b>${g.dev}</b>. juegosAPK solo lo aloja.</div>
+      `;
+      modal.classList.add('open');
+
+      // Rate stars
+      document.getElementById('rateStarsM')?.addEventListener('click', ev => {
+        const b = ev.target.closest('[data-star]');
+        if (!b) return;
+        const n = +b.dataset.star,
+          old = MYVOTES[id] || 0;
+        g.rSum = g.rSum - old + n;
+        g.rCount = g.rCount + (old ? 0 : 1);
+        MYVOTES[id] = n;
+        save();
+        document.querySelectorAll('#rateStarsM button').forEach(x => x.classList.toggle('lit', +x.dataset.star <= n));
+        toastM(`✔ Votaste ${n} ★`, 'ok');
+        renderCatalog();
+        renderFavorites();
+        renderProfile();
+        updateStatsM();
+      });
+
+      // Edit game (JBK or author)
+      document.getElementById('editGameBtn')?.addEventListener('click', () => {
+        const newDesc = prompt('Nueva descripción:', g.desc || '');
+        if (newDesc !== null) { g.desc = newDesc;
+          save();
+          openModalM(id);
+          toastM('✅ Juego actualizado', 'ok'); }
+      });
+
+      modal.querySelector('[data-dl]')?.addEventListener('click', () => {
+        simulateDownloadM(g);
+        modal.classList.remove('open');
+      });
+      modal.querySelector('[data-fav]')?.addEventListener('click', () => {
+        toggleFavM(g.id);
+        openModalM(id);
+      });
+      modal.querySelector('[data-share]')?.addEventListener('click', () => {
+        const url = location.origin + location.pathname + '#' + g.id;
+        navigator.clipboard?.writeText(url).then(() => toastM('🔗 Enlace copiado', 'ok')).catch(() => toastM(
+        'Enlace: ' + url));
+      });
+      modal.querySelector('[data-rep]')?.addEventListener('click', () => {
+        if (g.reported) { toastM('Ya en revisión', 'warn'); return; }
+        g.reported = true;
+        save();
+        toastM('⚠ Denuncia enviada', 'warn');
+        modal.classList.remove('open');
+        renderAllM();
+      });
+    }
+
+    document.getElementById('modalCloseM').addEventListener('click', () => {
+      document.getElementById('modalM').classList.remove('open');
+    });
+    document.getElementById('modalM').addEventListener('click', e => {
+      if (e.target === e.currentTarget) document.getElementById('modalM').classList.remove('open');
+    });
+
+    /* ============ DESCARGA ============ */
+    function simulateDownloadM(g) {
+      toastM(`⬇ Descargando ${g.t}...`, 'ok');
+      g.dls++;
+      // Guardar historial
+      HISTORY.unshift({ name: g.t, dev: g.dev, date: new Date().toLocaleString('es-ES'), id: g.id });
+      if (HISTORY.length > 20) HISTORY.pop();
+      save();
+      renderAllM();
+      // Recibo
+      const txt =
+        `juegosAPK · RECIBO\nJuego: ${g.t}\nAutor: ${g.dev}\nVersión: ${g.ver}\nPeso: ${fmtBytes(g.size)}\nFecha: ${new Date().toLocaleString('es-ES')}\nEl juego es de ${g.dev}. juegosAPK (JBK) lo aloja.`;
+      const blob = new Blob([txt], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${g.t.toLowerCase().replace(/[^a-z0-9]+/g,'-')}-recibo.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+    }
+
+    /* ============ FAVORITOS TOGGLE ============ */
+    function toggleFavM(id) {
+      if (FAVS.has(id)) { FAVS.delete(id);
+        toastM('Eliminado de favoritos'); } else { FAVS.add(id);
+        toastM('♥ Añadido a favoritos', 'ok'); }
+      save();
+      renderAllM();
+    }
+
+    /* ============ PUBLICAR ============ */
+    let pickedFileM = null;
+    const dzM = document.getElementById('dropzoneM'),
+      fInputM = document.getElementById('fileInputM');
+    dzM.addEventListener('click', () => fInputM.click());
+    dzM.addEventListener('dragover', e => { e.preventDefault();
+      dzM.classList.add('over'); });
+    dzM.addEventListener('dragleave', () => dzM.classList.remove('over'));
+    dzM.addEventListener('drop', e => { e.preventDefault();
+      dzM.classList.remove('over');
+      setFileM(e.dataTransfer.files[0]); });
+    fInputM.addEventListener('change', () => setFileM(fInputM.files[0]));
+
+    function setFileM(f) {
+      if (!f) return;
+      if (!/\.(apk|apks|xapk)$/i.test(f.name)) { toastM('⚠ Solo .apk', 'warn'); return; }
+      pickedFileM = f;
+      document.getElementById('fcNameM').textContent = f.name;
+      document.getElementById('fcMetaM').textContent = `${fmtBytes(f.size)} · listo`;
+      document.getElementById('fileCardM').classList.add('show');
+      if (!document.getElementById('pNameM').value) document.getElementById('pNameM').value = f.name.replace(
+        /\.(apk|apks|xapk)$/i, '').replace(/[-_]+/g, ' ');
+      termLineM(`📦 ${f.name} (${fmtBytes(f.size)})`, 'l-ok');
+    }
+
+    document.getElementById('publishBtnM').addEventListener('click', async () => {
+      if (!pickedFileM) { toastM('⚠ Selecciona un .apk', 'warn'); return; }
+      const name = document.getElementById('pNameM').value.trim();
+      const dev = document.getElementById('pDevM').value.trim();
+      if (!name || !dev) { toastM('⚠ Nombre y autor son obligatorios', 'warn'); return; }
+      const btn = document.getElementById('publishBtnM');
+      btn.disabled = true;
+      btn.textContent = '⏳ Publicando...';
+
+      const id = name.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-') + '-' + Date.now().toString(36);
+      GAMES.unshift({
+        id,
+        t: name,
+        dev,
+        cat: document.getElementById('pCatM').value,
+        ver: document.getElementById('pVerM').value.trim() || '1.0.0',
+        size: pickedFileM.size,
+        desc: document.getElementById('pDescM').value.trim(),
+        date: Date.now(),
+        dls: 0,
+        rSum: 0,
+        rCount: 0,
+        featured: false,
+        reported: false
+      });
+      save();
+      // Si el autor no estaba guardado, lo guardamos
+      if (!currentAuthor) { currentAuthor = dev;
+        localStorage.setItem(LSAUTH, currentAuthor); }
+      toastM(`✔ «${name}» publicado! Eres el autor.`, 'ok');
+      termLineM(`✔ ${name} de ${dev} → catálogo`, 'l-ok');
+      pickedFileM = null;
+      document.getElementById('fileCardM').classList.remove('show');
+      fInputM.value = '';
+      document.getElementById('pNameM').value = '';
+      document.getElementById('pDevM').value = '';
+      document.getElementById('pDescM').value = '';
+      btn.disabled = false;
+      btn.textContent = '▸ COMPARTIR';
+      renderAllM();
+      showPage('catalog');
+    });
+
+    /* ============ PERFIL ACCIONES ============ */
+    document.getElementById('editProfileBtn').addEventListener('click', () => {
+      const newName = prompt('Tu nombre de autor:', currentAuthor || '');
+      if (newName !== null && newName.trim()) {
+        // Renombrar autor en juegos existentes? Solo si es el mismo.
+        // Para simplificar, solo cambiamos el nombre actual.
+        currentAuthor = newName.trim();
+        localStorage.setItem(LSAUTH, currentAuthor);
+        renderProfile();
+        toastM('✅ Nombre actualizado', 'ok');
+      }
+    });
+
+    document.getElementById('jbkProfileBtn').addEventListener('click', openJbkM);
+
+    /* ============ PANEL JBK MÓVIL ============ */
+    function openJbkM() {
+      const JBK_CODE = 'JBK2026';
+      if (localStorage.getItem(LSJBK) === '1') {
+        renderJbkPanelM();
+        return;
+      }
+      const code = prompt('Código de administrador (JBK2026):');
+      if (code?.toUpperCase() === JBK_CODE) {
+        localStorage.setItem(LSJBK, '1');
+        toastM('⚙ Bienvenido, JBK', 'ok');
+        renderJbkPanelM();
+      } else if (code !== null) toastM('⚠ Código incorrecto', 'warn');
+    }
+
+    function renderJbkPanelM() {
+      const list = GAMES.map(g =>
+        `${g.featured?'★ ':''}${g.t} (${g.dev}) ${g.reported?'⚠':''}`
+      ).join('\n') || '(vacío)';
+      const action = prompt(
+        `PANEL JBK\nJuegos:\n${list}\n\nComandos:\n1 - Destacar un juego (escribe ID)\n2 - Limpiar denuncias\n3 - Eliminar juego (ID)\n4 - Cerrar sesión`,
+        '1'
+      );
+      if (action === '1') {
+        const id = prompt('ID del juego a destacar:');
+        const g = GAMES.find(x => x.id === id);
+        if (g) { GAMES.forEach(x => x.featured = false);
+          g.featured = true;
+          save();
+          toastM(`★ ${g.t} destacado`, 'ok');
+          renderAllM(); } else toastM('ID no encontrado', 'warn');
+      } else if (action === '2') {
+        GAMES.forEach(g => g.reported = false);
+        save();
+        toastM('✅ Denuncias limpiadas', 'ok');
+        renderAllM();
+      } else if (action === '3') {
+        const id = prompt('ID del juego a eliminar:');
+        const g = GAMES.find(x => x.id === id);
+        if (g && confirm(`¿Eliminar "${g.t}"?`)) {
+          GAMES = GAMES.filter(x => x.id !== id);
+          FAVS.delete(id);
+          save();
+          toastM(`🗑 ${g.t} eliminado`, 'warn');
+          renderAllM();
+        }
+      } else if (action === '4') {
+        localStorage.removeItem(LSJBK);
+        toastM('Sesión cerrada');
+      }
+    }
+
+    /* ============ RANDOM ============ */
+    document.getElementById('randomBtn').addEventListener('click', () => {
+      if (!GAMES.length) { toastM('No hay juegos', 'warn'); return; }
+      const g = GAMES[Math.floor(Math.random() * GAMES.length)];
+      openModalM(g.id);
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      renderAllM();
+      toastM('🔄 Actualizado', 'ok');
+    });
+
+    /* ============ RENDER ALL ============ */
+    function renderAllM() {
+      updateStatsM();
+      renderChipsM();
+      renderCatalog();
+      renderFavorites();
+      renderProfile();
+      // Re-sync chips
+      document.querySelectorAll('#chipsM .chip').forEach(el => {
+        el.addEventListener('click', function() {
+          state.cat = this.dataset.cat;
+          renderChipsM();
+          renderCatalog();
+        });
+      });
+      // Search
+      document.getElementById('searchInputM').addEventListener('input', e => {
+        state.q = e.target.value;
+        renderCatalog();
+      });
+      document.getElementById('sortSelectM').addEventListener('change', e => {
+        state.sort = e.target.value;
+        renderCatalog();
+      });
+      // Delegated events for grid (download, fav, card click)
+      document.querySelectorAll('#gridM, #favGridM, #myGamesGrid').forEach(container => {
+        container.addEventListener('click', e => {
+          const dl = e.target.closest('[data-dl]');
+          if (dl) { const g = GAMES.find(x => x.id === dl.dataset.dl); if (g) simulateDownloadM(g); return; }
+          const fav = e.target.closest('[data-fav]');
+          if (fav) { toggleFavM(fav.dataset.fav); return; }
+          const card = e.target.closest('.g-card-m');
+          if (card) openModalM(card.dataset.id);
+        });
+      });
+    }
+
+    /* ============ INICIALIZAR ============ */
+    renderAllM();
+
+    // Enlace directo
+    if (location.hash) {
+      const id = decodeURIComponent(location.hash.slice(1));
+      const g = GAMES.find(x => x.id === id);
+      if (g) setTimeout(() => openModalM(id), 400);
+    }
+
+    // Prevenir scroll fuera de la app
+    document.body.addEventListener('touchmove', e => {
+      const app = document.getElementById('app');
+      if (!app.contains(e.target)) e.preventDefault();
+    }, { passive: false });
+
+    console.log('juegosAPK v2.0 · modo móvil · creado por JBK');
+  </script>
+</body>
+</html>
