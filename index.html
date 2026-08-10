@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>juegosAPK · móvil</title>
+  <title>juegosAPK · comunidad</title>
   <meta name="theme-color" content="#0a0508">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -83,7 +83,6 @@
       box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
     }
 
-    /* Header móvil */
     .app-header {
       padding: 12px 16px;
       background: rgba(10, 5, 8, 0.92);
@@ -104,6 +103,8 @@
       gap: 8px;
       letter-spacing: .02em;
       color: var(--text);
+      cursor: pointer;
+      user-select: none;
     }
     .app-header .logo .apk {
       color: var(--red);
@@ -119,6 +120,10 @@
       font-size: 13px;
       border-radius: 6px;
       box-shadow: 0 0 14px var(--red-glow);
+      transition: transform .3s;
+    }
+    .app-header .logo:active .crown {
+      transform: rotate(-12deg) scale(1.1);
     }
     .app-header .header-actions {
       display: flex;
@@ -131,12 +136,12 @@
       font-size: 18px;
       padding: 6px;
       transition: color .2s;
+      touch-action: manipulation;
     }
     .app-header .header-actions button:active {
       color: var(--red);
     }
 
-    /* ============ CONTENIDO SCROLLABLE ============ */
     .main-scroll {
       flex: 1;
       overflow-y: auto;
@@ -602,6 +607,8 @@
       overflow: hidden;
       transition: all .2s;
       touch-action: manipulation;
+      text-decoration: none;
+      display: block;
     }
     .g-card-m .g-foot .g-dl:active {
       background: var(--red);
@@ -615,6 +622,7 @@
       width: 0;
       background: rgba(255, 59, 59, .25);
       transition: width .1s linear;
+      pointer-events: none;
     }
     .g-card-m .g-foot .g-dl .lbl {
       position: relative;
@@ -687,7 +695,7 @@
       margin-top: 4px;
     }
 
-    /* ============ MODAL MÓVIL ============ */
+    /* ============ MODAL ============ */
     .modal-m {
       position: fixed;
       inset: 0;
@@ -731,6 +739,7 @@
       font-size: 22px;
       padding: 4px 8px;
       transition: color .2s;
+      touch-action: manipulation;
     }
     .modal-m .modal-box .m-close:active {
       color: var(--red);
@@ -802,12 +811,17 @@
       color: var(--line2);
       transition: transform .15s, color .15s;
       padding: 2px;
+      touch-action: manipulation;
     }
     .modal-m .modal-box .m-rate .rate-stars button.lit {
       color: var(--red);
     }
     .modal-m .modal-box .m-rate .rate-stars button:active {
       transform: scale(1.3);
+    }
+    .modal-m .modal-box .m-rate .rate-stars button:disabled {
+      opacity: .4;
+      cursor: not-allowed;
     }
     .modal-m .modal-box .m-actions {
       display: flex;
@@ -828,6 +842,8 @@
       color: #0a0508;
       transition: transform .2s, box-shadow .2s;
       touch-action: manipulation;
+      text-decoration: none;
+      display: inline-block;
     }
     .modal-m .modal-box .m-actions .btn-m:active {
       transform: scale(0.94);
@@ -841,6 +857,15 @@
       border-color: var(--red);
       color: var(--red);
     }
+    .modal-m .modal-box .m-actions .btn-danger-m {
+      background: transparent;
+      border: 1px solid var(--red);
+      color: var(--red);
+    }
+    .modal-m .modal-box .m-actions .btn-danger-m:active {
+      background: var(--red);
+      color: #0a0508;
+    }
     .modal-m .modal-box .m-rights {
       font-family: var(--mono);
       font-size: 9px;
@@ -851,6 +876,27 @@
     }
     .modal-m .modal-box .m-rights b {
       color: var(--red-light);
+    }
+    .modal-m .modal-box .m-whatsapp {
+      margin-top: 12px;
+      padding: 8px 12px;
+      background: rgba(37, 211, 102, 0.15);
+      border: 1px solid rgba(37, 211, 102, 0.3);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .modal-m .modal-box .m-whatsapp a {
+      color: #25D366;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+    .modal-m .modal-box .m-whatsapp a:active {
+      color: var(--red);
     }
 
     /* ============ PERFIL ============ */
@@ -931,6 +977,28 @@
       font-size: 10px;
     }
 
+    .whatsapp-banner {
+      background: rgba(37, 211, 102, 0.1);
+      border: 1px solid rgba(37, 211, 102, 0.2);
+      border-radius: var(--r);
+      padding: 12px 16px;
+      margin: 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .whatsapp-banner a {
+      color: #25D366;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+    .whatsapp-banner a:active {
+      color: var(--red);
+    }
+
     /* ============ BOTONES GENERALES ============ */
     .btn-full {
       width: 100%;
@@ -959,7 +1027,7 @@
       position: fixed;
       bottom: calc(var(--bottom-nav) + 16px + var(--safe-bottom));
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) translateY(20px);
       background: var(--panel2);
       border: 1px solid var(--line2);
       border-left: 3px solid var(--red);
@@ -1044,7 +1112,6 @@
       }
     }
 
-    /* Scroll suave para el terminal */
     .term-mini::-webkit-scrollbar {
       width: 3px;
     }
@@ -1059,7 +1126,7 @@
   <div id="app">
     <!-- HEADER -->
     <header class="app-header">
-      <div class="logo">
+      <div class="logo" id="secretLogo">
         <span class="crown">♛</span>juegos<span class="apk">APK</span>
       </div>
       <div class="header-actions">
@@ -1095,6 +1162,12 @@
           <div class="r-item"><div class="n">01</div><h4>Publica</h4><p>Sube tu APK</p></div>
           <div class="r-item"><div class="n">02</div><h4>Es tuyo</h4><p>Eres el autor</p></div>
           <div class="r-item"><div class="n">03</div><h4>Comparte</h4><p>Valora y juega</p></div>
+        </div>
+
+        <!-- WhatsApp banner -->
+        <div class="whatsapp-banner">
+          <i class="fab fa-whatsapp" style="font-size:24px;color:#25D366;"></i>
+          <span>Únete al grupo de la comunidad: <a href="https://chat.whatsapp.com/LHQkq8YOapRJaFpsJP0sUI" target="_blank">WhatsApp</a></span>
         </div>
 
         <div style="margin-top:12px; text-align:center; font-family:var(--mono); font-size:10px; color:var(--dim);">
@@ -1147,6 +1220,7 @@
           </select>
         </div>
         <div class="field-m"><label>Descripción</label><textarea id="pDescM" maxlength="200" placeholder="¿De qué va tu juego?"></textarea></div>
+        <div class="field-m"><label>Enlace de descarga (URL) *</label><input id="pLinkM" type="url" placeholder="https://ejemplo.com/juego.apk" required></div>
         <button class="btn-full" id="publishBtnM">▸ COMPARTIR CON LA COMUNIDAD</button>
         <p style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:8px;text-align:center;">Al publicar, <b style="color:var(--red-light);">tú eres el autor</b>. El juego es tuyo.</p>
       </div>
@@ -1176,6 +1250,12 @@
 
         <h3 style="font-family:var(--display);font-size:16px;margin:16px 0 8px;">📱 Mis juegos publicados</h3>
         <div class="grid-m" id="myGamesGrid"></div>
+
+        <!-- WhatsApp -->
+        <div class="whatsapp-banner">
+          <i class="fab fa-whatsapp" style="font-size:24px;color:#25D366;"></i>
+          <span>Únete al grupo de la comunidad: <a href="https://chat.whatsapp.com/LHQkq8YOapRJaFpsJP0sUI" target="_blank">WhatsApp</a></span>
+        </div>
 
         <div style="margin-top:16px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--dim);">
           <i class="fas fa-code"></i> juegosAPK · v2.0 · por JBK
@@ -1220,6 +1300,7 @@
     let MYVOTES = JSON.parse(localStorage.getItem(LSMY) || '{}');
     let HISTORY = JSON.parse(localStorage.getItem(LSHIST) || '[]');
     let currentAuthor = localStorage.getItem(LSAUTH) || '';
+    let secretClickCount = 0;
 
     const CATS = ['Todos', 'Acción', 'Aventura', 'Carreras', 'Deportes', 'Estrategia', 'Indie', 'Puzzle', 'RPG'];
     const state = { cat: 'Todos', q: '', sort: 'recientes', currentPage: 'home' };
@@ -1268,7 +1349,6 @@
       if (target) target.classList.add('active');
       document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
       state.currentPage = pageId;
-      // Si vamos a favoritos o perfil, refrescamos
       if (pageId === 'favorites') renderFavorites();
       if (pageId === 'profile') renderProfile();
       if (pageId === 'catalog') renderCatalog();
@@ -1333,6 +1413,7 @@
       const flag = g.reported ?
         '<span class="g-flag">⚠</span>' :
         g.featured ? '<span class="g-flag">★</span>' : '';
+      const link = g.link || '#';
       return `<div class="g-card-m" data-id="${g.id}">
         ${flag}
         <div class="g-top">
@@ -1341,7 +1422,7 @@
         </div>
         <div class="g-mid"><span class="stars">${r?stars(r):'<span class="off">★★★★★</span>'}</span><span>${r?r.toFixed(1).replace('.',',')+' ('+g.rCount+')':'—'}</span></div>
         <div class="g-foot">
-          <button class="g-dl" data-dl="${g.id}"><span class="fill"></span><span class="lbl">⬇ ${fmtBytes(g.size)}</span></button>
+          <a href="${link}" target="_blank" class="g-dl" data-dl="${g.id}"><span class="fill"></span><span class="lbl">⬇ ${fmtBytes(g.size)}</span></a>
           <button class="icon-btn${FAVS.has(g.id)?' fav':''}" data-fav="${g.id}">♥</button>
         </div>
         <div class="g-rights">de <b>${g.dev}</b> · ${timeAgo(g.date)}</div>
@@ -1367,7 +1448,6 @@
       document.getElementById('profileGames').textContent = myGames.length;
       document.getElementById('profileDls').textContent = fmtDL(myGames.reduce((a, g) => a + g.dls, 0));
 
-      // Historial
       const histList = document.getElementById('historyList');
       if (!HISTORY.length) {
         histList.innerHTML = '<li style="color:var(--dim);font-size:11px;">No has descargado nada aún</li>';
@@ -1377,7 +1457,6 @@
         ).join('');
       }
 
-      // Mis juegos
       const grid = document.getElementById('myGamesGrid');
       if (!myGames.length) {
         grid.innerHTML =
@@ -1395,79 +1474,109 @@
         mine = MYVOTES[id] || 0;
       const isJBK = localStorage.getItem(LSJBK) === '1';
       const isAuthor = g.dev === currentAuthor;
+      const link = g.link || '#';
 
       const modal = document.getElementById('modalM');
       const box = document.getElementById('modalContentM');
+
+      // Estrellas: deshabilitar si es el autor
+      const starsHtml = [1, 2, 3, 4, 5].map(n =>
+        `<button data-star="${n}" class="${n<=mine?'lit':''}" ${isAuthor?'disabled':''}>★</button>`
+      ).join('');
+
       box.innerHTML = `
         <div class="m-title">${g.t} ${g.featured?'★':''}</div>
         <div class="m-sub">por <b>${g.dev}</b> · ${g.cat} · ${timeAgo(g.date)} ${g.reported?'⚠':''}</div>
         <p class="m-desc">${g.desc||'Sin descripción.'}</p>
         <div class="m-rate">
           <span class="rb-t">Tu nota</span>
-          <div class="rate-stars" id="rateStarsM">${[1,2,3,4,5].map(n=>`<button data-star="${n}" class="${n<=mine?'lit':''}">★</button>`).join('')}</div>
+          <div class="rate-stars" id="rateStarsM">${starsHtml}</div>
           <span style="font-family:var(--mono);font-size:10px;color:var(--muted);">${r?r.toFixed(1).replace('.',',')+' ★ ('+g.rCount+')':'Sin votos'}</span>
+          ${isAuthor ? '<span style="font-family:var(--mono);font-size:9px;color:var(--red);margin-left:auto;">(no puedes votar tu propio juego)</span>' : ''}
         </div>
         <table class="m-spec">
           <tr><td>Autor</td><td style="color:var(--red-light);">${g.dev}</td></tr>
           <tr><td>Versión</td><td>${g.ver}</td></tr>
           <tr><td>Peso</td><td>${fmtBytes(g.size)}</td></tr>
           <tr><td>Descargas</td><td>${g.dls}</td></tr>
+          <tr><td>Enlace</td><td><a href="${link}" target="_blank" style="color:var(--red);word-break:break-all;">${link}</a></td></tr>
         </table>
         <div class="m-actions">
-          <button class="btn-m" data-dl="${g.id}">⬇ Descargar</button>
+          <a href="${link}" target="_blank" class="btn-m">⬇ Descargar</a>
           <button class="btn-m btn-ghost-m" data-fav="${g.id}">${FAVS.has(g.id)?'♥ Quitar':'♥ Favorito'}</button>
           <button class="btn-m btn-ghost-m" data-share="${g.id}">🔗 Compartir</button>
         </div>
         ${(isJBK || isAuthor) ? `<div class="m-actions" style="margin-top:6px;">
           <button class="btn-m btn-ghost-m" id="editGameBtn" data-id="${g.id}" style="flex:1;"><i class="fas fa-edit"></i> Editar</button>
+          ${isAuthor ? `<button class="btn-m btn-danger-m" id="deleteGameBtn" data-id="${g.id}" style="flex:1;">🗑 Eliminar</button>` : ''}
         </div>` : ''}
-        ${(isJBK) ? `<div class="m-actions" style="margin-top:6px;">
-          <button class="btn-m btn-ghost-m" data-rep="${g.id}" style="flex:1;color:var(--red);">⚠ Denunciar</button>
+        ${isJBK && !isAuthor ? `<div class="m-actions" style="margin-top:6px;">
+          <button class="btn-m btn-danger-m" data-rep="${g.id}" style="flex:1;">⚠ Denunciar</button>
         </div>` : ''}
         <div class="m-rights">Este juego es propiedad de <b>${g.dev}</b>. juegosAPK solo lo aloja.</div>
+        <div class="m-whatsapp">
+          <i class="fab fa-whatsapp" style="font-size:20px;color:#25D366;"></i>
+          <span>Únete al grupo de la comunidad: <a href="https://chat.whatsapp.com/LHQkq8YOapRJaFpsJP0sUI" target="_blank">WhatsApp</a></span>
+        </div>
       `;
       modal.classList.add('open');
 
-      // Rate stars
-      document.getElementById('rateStarsM')?.addEventListener('click', ev => {
-        const b = ev.target.closest('[data-star]');
-        if (!b) return;
-        const n = +b.dataset.star,
-          old = MYVOTES[id] || 0;
-        g.rSum = g.rSum - old + n;
-        g.rCount = g.rCount + (old ? 0 : 1);
-        MYVOTES[id] = n;
-        save();
-        document.querySelectorAll('#rateStarsM button').forEach(x => x.classList.toggle('lit', +x.dataset.star <= n));
-        toastM(`✔ Votaste ${n} ★`, 'ok');
-        renderCatalog();
-        renderFavorites();
-        renderProfile();
-        updateStatsM();
-      });
+      // Rate stars (solo si no es autor)
+      const rateContainer = document.getElementById('rateStarsM');
+      if (rateContainer && !isAuthor) {
+        rateContainer.addEventListener('click', ev => {
+          const b = ev.target.closest('[data-star]');
+          if (!b || b.disabled) return;
+          const n = +b.dataset.star,
+            old = MYVOTES[id] || 0;
+          g.rSum = g.rSum - old + n;
+          g.rCount = g.rCount + (old ? 0 : 1);
+          MYVOTES[id] = n;
+          save();
+          document.querySelectorAll('#rateStarsM button').forEach(x => x.classList.toggle('lit', +x.dataset.star <= n));
+          toastM(`✔ Votaste ${n} ★`, 'ok');
+          renderAllM();
+          // Actualizar modal
+          openModalM(id);
+        });
+      }
 
-      // Edit game (JBK or author)
+      // Edit game
       document.getElementById('editGameBtn')?.addEventListener('click', () => {
         const newDesc = prompt('Nueva descripción:', g.desc || '');
         if (newDesc !== null) { g.desc = newDesc;
           save();
           openModalM(id);
-          toastM('✅ Juego actualizado', 'ok'); }
+          toastM('✅ Juego actualizado', 'ok');
+          renderAllM(); }
       });
 
-      modal.querySelector('[data-dl]')?.addEventListener('click', () => {
-        simulateDownloadM(g);
-        modal.classList.remove('open');
+      // Delete game (solo autor)
+      document.getElementById('deleteGameBtn')?.addEventListener('click', () => {
+        if (confirm(`¿Eliminar definitivamente "${g.t}"?`)) {
+          GAMES = GAMES.filter(x => x.id !== id);
+          FAVS.delete(id);
+          save();
+          toastM(`🗑 "${g.t}" eliminado`, 'warn');
+          modal.classList.remove('open');
+          renderAllM();
+        }
       });
+
+      // Favorito
       modal.querySelector('[data-fav]')?.addEventListener('click', () => {
         toggleFavM(g.id);
         openModalM(id);
       });
+
+      // Compartir
       modal.querySelector('[data-share]')?.addEventListener('click', () => {
         const url = location.origin + location.pathname + '#' + g.id;
         navigator.clipboard?.writeText(url).then(() => toastM('🔗 Enlace copiado', 'ok')).catch(() => toastM(
         'Enlace: ' + url));
       });
+
+      // Denunciar (solo JBK)
       modal.querySelector('[data-rep]')?.addEventListener('click', () => {
         if (g.reported) { toastM('Ya en revisión', 'warn'); return; }
         g.reported = true;
@@ -1484,28 +1593,6 @@
     document.getElementById('modalM').addEventListener('click', e => {
       if (e.target === e.currentTarget) document.getElementById('modalM').classList.remove('open');
     });
-
-    /* ============ DESCARGA ============ */
-    function simulateDownloadM(g) {
-      toastM(`⬇ Descargando ${g.t}...`, 'ok');
-      g.dls++;
-      // Guardar historial
-      HISTORY.unshift({ name: g.t, dev: g.dev, date: new Date().toLocaleString('es-ES'), id: g.id });
-      if (HISTORY.length > 20) HISTORY.pop();
-      save();
-      renderAllM();
-      // Recibo
-      const txt =
-        `juegosAPK · RECIBO\nJuego: ${g.t}\nAutor: ${g.dev}\nVersión: ${g.ver}\nPeso: ${fmtBytes(g.size)}\nFecha: ${new Date().toLocaleString('es-ES')}\nEl juego es de ${g.dev}. juegosAPK (JBK) lo aloja.`;
-      const blob = new Blob([txt], { type: 'text/plain' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `${g.t.toLowerCase().replace(/[^a-z0-9]+/g,'-')}-recibo.txt`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(a.href), 3000);
-    }
 
     /* ============ FAVORITOS TOGGLE ============ */
     function toggleFavM(id) {
@@ -1545,7 +1632,9 @@
       if (!pickedFileM) { toastM('⚠ Selecciona un .apk', 'warn'); return; }
       const name = document.getElementById('pNameM').value.trim();
       const dev = document.getElementById('pDevM').value.trim();
+      const link = document.getElementById('pLinkM').value.trim();
       if (!name || !dev) { toastM('⚠ Nombre y autor son obligatorios', 'warn'); return; }
+      if (!link || !link.startsWith('http')) { toastM('⚠ Enlace de descarga válido requerido', 'warn'); return; }
       const btn = document.getElementById('publishBtnM');
       btn.disabled = true;
       btn.textContent = '⏳ Publicando...';
@@ -1559,6 +1648,7 @@
         ver: document.getElementById('pVerM').value.trim() || '1.0.0',
         size: pickedFileM.size,
         desc: document.getElementById('pDescM').value.trim(),
+        link: link,
         date: Date.now(),
         dls: 0,
         rSum: 0,
@@ -1567,10 +1657,9 @@
         reported: false
       });
       save();
-      // Si el autor no estaba guardado, lo guardamos
       if (!currentAuthor) { currentAuthor = dev;
         localStorage.setItem(LSAUTH, currentAuthor); }
-      toastM(`✔ «${name}» publicado! Eres el autor.`, 'ok');
+      toastM(`✔ «${name}» publicado!`, 'ok');
       termLineM(`✔ ${name} de ${dev} → catálogo`, 'l-ok');
       pickedFileM = null;
       document.getElementById('fileCardM').classList.remove('show');
@@ -1578,6 +1667,7 @@
       document.getElementById('pNameM').value = '';
       document.getElementById('pDevM').value = '';
       document.getElementById('pDescM').value = '';
+      document.getElementById('pLinkM').value = '';
       btn.disabled = false;
       btn.textContent = '▸ COMPARTIR';
       renderAllM();
@@ -1588,8 +1678,6 @@
     document.getElementById('editProfileBtn').addEventListener('click', () => {
       const newName = prompt('Tu nombre de autor:', currentAuthor || '');
       if (newName !== null && newName.trim()) {
-        // Renombrar autor en juegos existentes? Solo si es el mismo.
-        // Para simplificar, solo cambiamos el nombre actual.
         currentAuthor = newName.trim();
         localStorage.setItem(LSAUTH, currentAuthor);
         renderProfile();
@@ -1597,16 +1685,27 @@
       }
     });
 
+    /* ============ PANEL JBK (MENÚ SECRETO) ============ */
+    // Gesto secreto: tocar el logo 5 veces rápidamente
+    document.getElementById('secretLogo').addEventListener('click', () => {
+      secretClickCount++;
+      if (secretClickCount >= 5) {
+        secretClickCount = 0;
+        openJbkM();
+      }
+      clearTimeout(secretClickCount._reset);
+      secretClickCount._reset = setTimeout(() => { secretClickCount = 0; }, 1000);
+    });
+
     document.getElementById('jbkProfileBtn').addEventListener('click', openJbkM);
 
-    /* ============ PANEL JBK MÓVIL ============ */
     function openJbkM() {
       const JBK_CODE = 'JBK2026';
       if (localStorage.getItem(LSJBK) === '1') {
         renderJbkPanelM();
         return;
       }
-      const code = prompt('Código de administrador (JBK2026):');
+      const code = prompt('Código de administrador:');
       if (code?.toUpperCase() === JBK_CODE) {
         localStorage.setItem(LSJBK, '1');
         toastM('⚙ Bienvenido, JBK', 'ok');
@@ -1615,11 +1714,11 @@
     }
 
     function renderJbkPanelM() {
-      const list = GAMES.map(g =>
-        `${g.featured?'★ ':''}${g.t} (${g.dev}) ${g.reported?'⚠':''}`
+      const list = GAMES.map((g, i) =>
+        `${i+1}. ${g.featured?'★ ':''}${g.t} (${g.dev}) ${g.reported?'⚠':''}`
       ).join('\n') || '(vacío)';
       const action = prompt(
-        `PANEL JBK\nJuegos:\n${list}\n\nComandos:\n1 - Destacar un juego (escribe ID)\n2 - Limpiar denuncias\n3 - Eliminar juego (ID)\n4 - Cerrar sesión`,
+        `PANEL JBK - Administrador\nJuegos:\n${list}\n\nComandos:\n1 - Destacar juego (ID)\n2 - Limpiar denuncias\n3 - Eliminar juego (ID)\n4 - Cerrar sesión`,
         '1'
       );
       if (action === '1') {
@@ -1670,7 +1769,7 @@
       renderCatalog();
       renderFavorites();
       renderProfile();
-      // Re-sync chips
+      // Eventos dinámicos
       document.querySelectorAll('#chipsM .chip').forEach(el => {
         el.addEventListener('click', function() {
           state.cat = this.dataset.cat;
@@ -1678,7 +1777,6 @@
           renderCatalog();
         });
       });
-      // Search
       document.getElementById('searchInputM').addEventListener('input', e => {
         state.q = e.target.value;
         renderCatalog();
@@ -1687,11 +1785,13 @@
         state.sort = e.target.value;
         renderCatalog();
       });
-      // Delegated events for grid (download, fav, card click)
+      // Delegados
       document.querySelectorAll('#gridM, #favGridM, #myGamesGrid').forEach(container => {
         container.addEventListener('click', e => {
           const dl = e.target.closest('[data-dl]');
-          if (dl) { const g = GAMES.find(x => x.id === dl.dataset.dl); if (g) simulateDownloadM(g); return; }
+          if (dl) { // ya es un enlace, no hacemos nada, se abre solo
+            return;
+          }
           const fav = e.target.closest('[data-fav]');
           if (fav) { toggleFavM(fav.dataset.fav); return; }
           const card = e.target.closest('.g-card-m');
@@ -1710,7 +1810,6 @@
       if (g) setTimeout(() => openModalM(id), 400);
     }
 
-    // Prevenir scroll fuera de la app
     document.body.addEventListener('touchmove', e => {
       const app = document.getElementById('app');
       if (!app.contains(e.target)) e.preventDefault();
