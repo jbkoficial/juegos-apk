@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>juegosAPK · administración</title>
+  <title>juegosAPK · comunidad</title>
   <meta name="theme-color" content="#0a0508">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -119,6 +119,10 @@
       border-radius: 6px;
       box-shadow: 0 0 14px var(--red-glow);
       transition: transform .3s;
+    }
+    .app-header .header-actions {
+      display: flex;
+      gap: 8px;
     }
     .app-header .header-actions button {
       background: transparent;
@@ -274,32 +278,11 @@
     .g-dl {
       transition: all .3s;
     }
-    .g-dl:hover {
-      animation: btnGlow 0.8s ease-in-out infinite alternate;
-    }
-    @keyframes btnGlow {
-      from {
-        box-shadow: 0 0 4px var(--red-glow);
-      }
-      to {
-        box-shadow: 0 0 20px var(--red-glow);
-      }
-    }
-    .term-mini .caret {
-      display: inline-block;
-      width: 6px;
-      height: 11px;
+    .g-dl:active {
       background: var(--red);
-      vertical-align: middle;
-      animation: blink 1s steps(1) infinite;
-    }
-    @keyframes blink {
-      50% {
-        opacity: 0;
-      }
+      color: #0a0508;
     }
 
-    /* ============ ESTILOS GENERALES ============ */
     .stats-mini {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -350,6 +333,19 @@
     }
     .term-mini .l-info {
       color: var(--dim);
+    }
+    .term-mini .caret {
+      display: inline-block;
+      width: 6px;
+      height: 11px;
+      background: var(--red);
+      vertical-align: middle;
+      animation: blink 1s steps(1) infinite;
+    }
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
     }
 
     .toolbar-m {
@@ -410,6 +406,7 @@
       white-space: nowrap;
       transition: all .18s;
       touch-action: manipulation;
+      cursor: pointer;
     }
     .chips-m .chip:active {
       transform: scale(0.94);
@@ -1148,8 +1145,8 @@
         <span class="crown">♛</span>juegos<span class="apk">APK</span>
       </div>
       <div class="header-actions">
+        <!-- Solo el dado, sin refrescar -->
         <button id="randomBtn" aria-label="Juego aleatorio"><i class="fas fa-dice"></i></button>
-        <button id="refreshBtn" aria-label="Refrescar"><i class="fas fa-sync-alt"></i></button>
       </div>
     </header>
 
@@ -1543,7 +1540,7 @@
         </div>
       `;
 
-      // ===== PREVISUALIZACIÓN DE IMAGEN =====
+      // Previsualización de imagen
       const fileInput = document.getElementById('aImageFile');
       const previewDiv = document.getElementById('aImagePreview');
       const previewImg = document.getElementById('aImagePreviewImg');
@@ -1561,7 +1558,6 @@
         }
       });
 
-      // ===== EVENTOS DEL PANEL =====
       // Agregar juego
       document.getElementById('addGameBtn').addEventListener('click', () => {
         const name = document.getElementById('aName').value.trim();
@@ -1584,7 +1580,6 @@
 
         const id = name.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-') + '-' + Date.now().toString(36);
 
-        // Función para procesar imagen (si existe)
         const processImage = (file) => {
           return new Promise((resolve) => {
             if (!file) {
@@ -1593,7 +1588,6 @@
             }
             const reader = new FileReader();
             reader.onload = function(e) {
-              // Comprimir imagen a 200x200
               const img = new Image();
               img.onload = function() {
                 const canvas = document.createElement('canvas');
@@ -1637,7 +1631,6 @@
           save();
           toastM(`✔ «${name}» añadido al catálogo`, 'ok');
           termLineM(`📦 ${name} (${dev}) añadido por admin`, 'l-ok');
-          // Limpiar campos
           document.getElementById('aName').value = '';
           document.getElementById('aLink').value = '';
           document.getElementById('aDesc').value = '';
@@ -1732,7 +1725,6 @@
       `;
       modal.classList.add('open');
 
-      // Previsualización de nueva imagen en edición
       const editFileInput = document.getElementById('editImageFile');
       const editPreviewDiv = document.getElementById('editImagePreview');
       const editPreviewImg = document.getElementById('editImagePreviewImg');
@@ -1770,7 +1762,7 @@
         const processEditImage = (file) => {
           return new Promise((resolve) => {
             if (!file) {
-              resolve(null); // no cambiar imagen
+              resolve(null);
               return;
             }
             const reader = new FileReader();
@@ -1976,11 +1968,6 @@
       openModalM(g.id);
     });
 
-    document.getElementById('refreshBtn').addEventListener('click', () => {
-      renderAllM();
-      toastM('🔄 Actualizado', 'ok');
-    });
-
     /* ============ RENDER ALL ============ */
     function renderAllM() {
       updateStatsM();
@@ -1988,23 +1975,43 @@
       renderCatalog();
       renderFavorites();
       renderProfile();
+
+      // Re-asignar eventos de chips (para que funcionen sin recargar)
       document.querySelectorAll('#chipsM .chip').forEach(el => {
-        el.addEventListener('click', function() {
+        // Remover eventos antiguos (clonar para evitar duplicados)
+        const newEl = el.cloneNode(true);
+        el.parentNode.replaceChild(newEl, el);
+        newEl.addEventListener('click', function() {
           state.cat = this.dataset.cat;
           renderChipsM();
           renderCatalog();
         });
       });
-      document.getElementById('searchInputM').addEventListener('input', e => {
+
+      // Search y sort
+      const searchInput = document.getElementById('searchInputM');
+      // Remover eventos antiguos clonando
+      const newSearch = searchInput.cloneNode(true);
+      searchInput.parentNode.replaceChild(newSearch, searchInput);
+      newSearch.addEventListener('input', e => {
         state.q = e.target.value;
         renderCatalog();
       });
-      document.getElementById('sortSelectM').addEventListener('change', e => {
+
+      const sortSelect = document.getElementById('sortSelectM');
+      const newSort = sortSelect.cloneNode(true);
+      sortSelect.parentNode.replaceChild(newSort, sortSelect);
+      newSort.addEventListener('change', e => {
         state.sort = e.target.value;
         renderCatalog();
       });
+
+      // Delegados para tarjetas
       document.querySelectorAll('#gridM, #favGridM, #myGamesGrid').forEach(container => {
-        container.addEventListener('click', e => {
+        // Remover eventos antiguos clonando
+        const newContainer = container.cloneNode(true);
+        container.parentNode.replaceChild(newContainer, container);
+        newContainer.addEventListener('click', e => {
           const fav = e.target.closest('[data-fav]');
           if (fav) { toggleFavM(fav.dataset.fav); return; }
           const card = e.target.closest('.g-card-m');
@@ -2028,7 +2035,7 @@
       if (!app.contains(e.target)) e.preventDefault();
     }, { passive: false });
 
-    console.log('juegosAPK v2.0 · imagen por archivo + efectos · creado por JBK');
+    console.log('juegosAPK v2.0 · filtros funcionan sin recargar · creado por JBK');
   </script>
 </body>
 </html>
