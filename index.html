@@ -120,10 +120,6 @@
       box-shadow: 0 0 14px var(--red-glow);
       transition: transform .3s;
     }
-    .app-header .header-actions {
-      display: flex;
-      gap: 8px;
-    }
     .app-header .header-actions button {
       background: transparent;
       border: none;
@@ -1145,7 +1141,6 @@
         <span class="crown">♛</span>juegos<span class="apk">APK</span>
       </div>
       <div class="header-actions">
-        <!-- Solo el dado, sin refrescar -->
         <button id="randomBtn" aria-label="Juego aleatorio"><i class="fas fa-dice"></i></button>
       </div>
     </header>
@@ -1968,7 +1963,7 @@
       openModalM(g.id);
     });
 
-    /* ============ RENDER ALL ============ */
+    /* ============ RENDER ALL CON DELEGACIÓN DE EVENTOS ============ */
     function renderAllM() {
       updateStatsM();
       renderChipsM();
@@ -1976,21 +1971,26 @@
       renderFavorites();
       renderProfile();
 
-      // Re-asignar eventos de chips (para que funcionen sin recargar)
-      document.querySelectorAll('#chipsM .chip').forEach(el => {
-        // Remover eventos antiguos (clonar para evitar duplicados)
-        const newEl = el.cloneNode(true);
-        el.parentNode.replaceChild(newEl, el);
-        newEl.addEventListener('click', function() {
-          state.cat = this.dataset.cat;
-          renderChipsM();
+      // Eventos de chips con delegación (una sola vez)
+      const chipsContainer = document.getElementById('chipsM');
+      // Quitamos listeners antiguos clonando y reemplazando
+      const newChips = chipsContainer.cloneNode(true);
+      chipsContainer.parentNode.replaceChild(newChips, chipsContainer);
+      // Delegación: escuchamos clics en el contenedor
+      newChips.addEventListener('click', function(e) {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        const cat = chip.dataset.cat;
+        if (cat) {
+          state.cat = cat;
+          // Actualizar la UI de chips
+          this.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.dataset.cat === cat));
           renderCatalog();
-        });
+        }
       });
 
-      // Search y sort
+      // Buscador: reemplazar para evitar duplicados
       const searchInput = document.getElementById('searchInputM');
-      // Remover eventos antiguos clonando
       const newSearch = searchInput.cloneNode(true);
       searchInput.parentNode.replaceChild(newSearch, searchInput);
       newSearch.addEventListener('input', e => {
@@ -1998,6 +1998,7 @@
         renderCatalog();
       });
 
+      // Selector de orden
       const sortSelect = document.getElementById('sortSelectM');
       const newSort = sortSelect.cloneNode(true);
       sortSelect.parentNode.replaceChild(newSort, sortSelect);
@@ -2006,9 +2007,8 @@
         renderCatalog();
       });
 
-      // Delegados para tarjetas
+      // Tarjetas: delegación en los contenedores
       document.querySelectorAll('#gridM, #favGridM, #myGamesGrid').forEach(container => {
-        // Remover eventos antiguos clonando
         const newContainer = container.cloneNode(true);
         container.parentNode.replaceChild(newContainer, container);
         newContainer.addEventListener('click', e => {
@@ -2035,7 +2035,7 @@
       if (!app.contains(e.target)) e.preventDefault();
     }, { passive: false });
 
-    console.log('juegosAPK v2.0 · filtros funcionan sin recargar · creado por JBK');
+    console.log('juegosAPK v2.0 · filtros con delegación de eventos · creado por JBK');
   </script>
 </body>
 </html>
