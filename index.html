@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>juegosAPK · administración</title>
+  <title>juegosAPK · comunidad</title>
   <meta name="theme-color" content="#0a0508">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -102,7 +102,8 @@
       gap: 8px;
       letter-spacing: .02em;
       color: var(--text);
-      cursor: default;
+      cursor: pointer;
+      user-select: none;
     }
     .app-header .logo .apk {
       color: var(--red);
@@ -118,6 +119,10 @@
       font-size: 13px;
       border-radius: 6px;
       box-shadow: 0 0 14px var(--red-glow);
+      transition: transform .3s;
+    }
+    .app-header .logo:active .crown {
+      transform: rotate(-12deg) scale(1.1);
     }
     .app-header .header-actions {
       display: flex;
@@ -212,26 +217,6 @@
     .bottom-nav button.active i {
       text-shadow: 0 0 20px var(--red-glow);
     }
-    .bottom-nav .nav-publish {
-      margin-top: -16px;
-    }
-    .bottom-nav .nav-publish i {
-      font-size: 32px;
-      background: var(--red);
-      color: #0a0508;
-      padding: 8px;
-      border-radius: 50%;
-      box-shadow: 0 0 24px var(--red-glow);
-      transition: transform .2s, box-shadow .2s;
-      margin-bottom: 2px;
-    }
-    .bottom-nav .nav-publish:active i {
-      transform: scale(0.9);
-      box-shadow: 0 0 8px var(--red-glow);
-    }
-    .bottom-nav .nav-publish span {
-      display: none;
-    }
 
     /* ============ ESTILOS GENERALES ============ */
     .hero-mini {
@@ -318,34 +303,6 @@
       50% {
         opacity: 0;
       }
-    }
-
-    .rules-mini {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
-      margin: 16px 0;
-    }
-    .rules-mini .r-item {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      padding: 14px 8px;
-      text-align: center;
-    }
-    .rules-mini .r-item .n {
-      font-family: var(--display);
-      font-size: 18px;
-      color: var(--red);
-    }
-    .rules-mini .r-item h4 {
-      font-family: var(--display);
-      font-size: 11px;
-      margin: 4px 0;
-    }
-    .rules-mini .r-item p {
-      font-size: 10px;
-      color: var(--muted);
     }
 
     .toolbar-m {
@@ -1041,9 +998,6 @@
       .grid-m {
         grid-template-columns: 1fr;
       }
-      .rules-mini {
-        grid-template-columns: 1fr 1fr;
-      }
       .stats-mini {
         grid-template-columns: 1fr 1fr;
       }
@@ -1078,7 +1032,7 @@
   <div id="app">
     <!-- HEADER -->
     <header class="app-header">
-      <div class="logo">
+      <div class="logo" id="secretLogo">
         <span class="crown">♛</span>juegos<span class="apk">APK</span>
       </div>
       <div class="header-actions">
@@ -1110,11 +1064,7 @@
           <div><span class="caret"></span></div>
         </div>
 
-        <div class="rules-mini">
-          <div class="r-item"><div class="n">01</div><h4>Publica</h4><p>Sube tu APK</p></div>
-          <div class="r-item"><div class="n">02</div><h4>Es tuyo</h4><p>Eres el autor</p></div>
-          <div class="r-item"><div class="n">03</div><h4>Comparte</h4><p>Valora y juega</p></div>
-        </div>
+        <!-- SECCIÓN ELIMINADA: ya no están los pasos 01, 02, 03 -->
 
         <div class="whatsapp-banner">
           <i class="fab fa-whatsapp" style="font-size:24px;color:#25D366;"></i>
@@ -1188,11 +1138,10 @@
       </div>
     </div>
 
-    <!-- BOTTOM NAV -->
+    <!-- BOTTOM NAV: eliminado el botón de admin (engranaje) -->
     <nav class="bottom-nav" id="bottomNav">
       <button data-page="home" class="active"><i class="fas fa-home"></i><span>Inicio</span></button>
       <button data-page="catalog"><i class="fas fa-search"></i><span>Catálogo</span></button>
-      <button data-page="admin" class="nav-publish"><i class="fas fa-cog"></i><span>Admin</span></button>
       <button data-page="favorites"><i class="fas fa-heart"></i><span>Favoritos</span></button>
       <button data-page="profile"><i class="fas fa-user"></i><span>Perfil</span></button>
     </nav>
@@ -1436,7 +1385,7 @@
               <option>Puzzle</option><option>RPG</option>
             </select>
           </div>
-          <div class="field-m"><label>URL de la imagen (portada)</label><input id="aImage" type="url" placeholder="https://ejemplo.com/imagen.jpg"></div>
+          <div class="field-m"><label>URL de la imagen (portada) - opcional</label><input id="aImage" type="url" placeholder="https://ejemplo.com/imagen.jpg"></div>
           <div class="field-m"><label>URL del APK (TeraBox o servidor) *</label><input id="aLink" type="url" placeholder="https://terabox.com/.../juego.apk" required></div>
           <div class="field-m"><label>Descripción</label><textarea id="aDesc" maxlength="200" placeholder="Breve descripción del juego"></textarea></div>
           <div class="f-row-m">
@@ -1482,6 +1431,8 @@
         }
 
         const id = name.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-') + '-' + Date.now().toString(36);
+        const gameImage = image || 'https://picsum.photos/seed/' + id + '/120/120';
+
         GAMES.unshift({
           id,
           t: name,
@@ -1491,7 +1442,7 @@
           size: sizeMB > 0 ? sizeMB * 1024 * 1024 : 0,
           desc,
           link,
-          image: image || 'https://picsum.photos/seed/' + id + '/120/120',
+          image: gameImage,
           date: Date.now(),
           dls: 0,
           rSum: 0,
@@ -1537,9 +1488,23 @@
       });
     }
 
-    /* ============ ACCESO RÁPIDO AL ADMIN ============ */
+    /* ============ ACCESO DISCRETO AL ADMIN ============ */
+    // 1. Botón en el perfil
     document.getElementById('adminAccessBtn').addEventListener('click', () => {
       showPage('admin');
+    });
+
+    // 2. Tocar el logo 5 veces (acceso oculto)
+    let logoClickCount = 0;
+    document.getElementById('secretLogo').addEventListener('click', () => {
+      logoClickCount++;
+      if (logoClickCount >= 5) {
+        logoClickCount = 0;
+        showPage('admin');
+        toastM('🔐 Acceso a administración', 'ok');
+      }
+      clearTimeout(logoClickCount._reset);
+      logoClickCount._reset = setTimeout(() => { logoClickCount = 0; }, 1500);
     });
 
     /* ============ MODAL ============ */
@@ -1693,7 +1658,6 @@
 
     /* ============ INICIALIZAR ============ */
     renderAllM();
-    // Si el admin está autenticado, renderizar panel
     renderAdminPage();
 
     // Enlace directo
@@ -1708,7 +1672,7 @@
       if (!app.contains(e.target)) e.preventDefault();
     }, { passive: false });
 
-    console.log('juegosAPK v2.0 · administración privada · creado por JBK');
+    console.log('juegosAPK v2.0 · administración oculta · creado por JBK');
   </script>
 </body>
 </html>
